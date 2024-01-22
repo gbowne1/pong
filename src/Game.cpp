@@ -1,5 +1,5 @@
-#include "src/include/Game.h"
-#include "./include/CollisionDetection.h"
+#include "Game.h"
+#include "CollisionDetection.h"
 
 #include <iostream>
 #include <memory>
@@ -8,7 +8,7 @@
 #include <iomanip>
 
 Game::Game() {
-    cout << "Game object initialized." << endl;
+    std::cout << "Game object initialized." << std::endl;
 
     _state = GameState::kMainMenu;
     _scoresVector = { 0, 0 };
@@ -23,12 +23,12 @@ Game::Game() {
 }
 
 int Game::execute() {
-    cout << "Launching game." << endl;
+    std::cout << "Launching game." << std::endl;
 
     init();
 
     SDL_Event e;
-    cout << "Starting game..." << endl;
+    std::cout << "Starting game..." << std::endl;
     while (_running) {
         while (SDL_PollEvent(&e)) {
             onEvents(&e);
@@ -42,7 +42,7 @@ int Game::execute() {
 }
 
 bool Game::init() {
-    cout << "Initializing game." << "\n" << std::flush;
+    std::cout << "Initializing game." << "\n" << std::flush;
 
     // Init SDL
     if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
@@ -452,7 +452,7 @@ void Game::render() {
 }
 
 void Game::cleanUp() {
-    cout << "End. Cleaning up..." << endl;
+    std::cout << "End. Cleaning up..." << std::endl;
 
     for (auto f : _fonts) {
         TTF_CloseFont(f);

@@ -1,6 +1,7 @@
-#include "./include/Timer.h"
+#include "Timer.h"
 #include <mutex>
 #include <chrono>
+#include <thread>
 
 void Timer::delay(const std::chrono::milliseconds& ms) {
     std::unique_lock<std::mutex> lck(mtx);
