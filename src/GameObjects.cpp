@@ -1,4 +1,4 @@
-#include "./include/GameObjects.h"
+#include "GameObjects.h"
 #include <iostream>
 #include <random>
 

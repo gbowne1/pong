@@ -1,4 +1,4 @@
-#include "./include/CollisionDetection.h"
+#include "CollisionDetection.h"
 #include <iostream>
 
 // Checks if circle and rectangle have collided. Returns 2 ints representing where on x and y they collided. Both will be -1, -1 if no collision.
