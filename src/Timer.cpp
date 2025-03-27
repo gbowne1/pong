@@ -2,16 +2,17 @@
 #include <mutex>
 #include <chrono>
 #include <thread>
+#include <future> // Ensure future is included
+
+namespace pong {
 
 void Timer::delay(const std::chrono::milliseconds& ms) {
     std::unique_lock<std::mutex> lck(mtx);
     _completed = false;
-
     _isRunning = true;
-
     lck.unlock();
-    auto time_started = steady_clock::now();
-
+    
+    auto time_started = std::chrono::steady_clock::now();
     std::this_thread::sleep_for(ms);
 
     lck.lock();
@@ -19,12 +20,12 @@ void Timer::delay(const std::chrono::milliseconds& ms) {
     _completed = true;
 }
 
-bool Timer::isRunning() {
+bool Timer::isRunning() const {
     std::unique_lock<std::mutex> lck(mtx);
     return _isRunning;
 }
 
-bool Timer::isCompleted() {
+bool Timer::isCompleted() const {
     std::unique_lock<std::mutex> lck(mtx);
     return _completed;
 }
@@ -32,9 +33,10 @@ bool Timer::isCompleted() {
 bool Timer::start(const std::chrono::milliseconds& ms) {
     if (isRunning()) {
         return false;
-    }
-    else {
-        _ftr = std::async(&Timer::delay, this, ms);
+    } else {
+        _ftr = std::async(std::launch::async, &Timer::delay, this, ms);
         return true;
     }
 }
+
+} // namespace pong
