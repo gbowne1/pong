@@ -3,7 +3,7 @@
     "myDefaultIncludePath": [
       "${workspaceFolder}/StarshipAscension/include"
     ],
-    "myCompilerPath": "/usr/bin/gcc"
+    "myCompilerPath": "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.29.30133/bin/Hostx64/x64/cl.exe"
   },
   "configurations": [
     {
@@ -23,6 +23,39 @@
           "/usr/local/include",
           "/usr/include/x86_64-linux-gnu",
           "/usr/include"
+        ],
+        "limitSymbolsToIncludedHeaders": true,
+        "databaseFilename": "${workspaceFolder}/.vscode/browse.vc.db"
+      },
+      "configurationProvider": "ms-vscode.cmake-tools"
+    },
+    {
+      "name": "windows-msvc-x64",
+      "intelliSenseMode": "windows-msvc-x64",
+      "includePath": [
+        "${workspaceFolder}/**",
+        "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.29.30133/include",
+        "C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt",
+        "C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared",
+        "C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um",
+        "C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt"
+      ],
+      "defines": [
+        "_DEBUG",
+        "UNICODE",
+        "_UNICODE"
+      ],
+      "compilerPath": "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.29.30133/bin/Hostx64/x64/cl.exe",
+      "cStandard": "c11",
+      "cppStandard": "c++17",
+      "browse": {
+        "path": [
+          "${workspaceFolder}/**",
+          "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.29.30133/include",
+          "C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt",
+          "C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared",
+          "C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um",
+          "C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt"
         ],
         "limitSymbolsToIncludedHeaders": true,
         "databaseFilename": "${workspaceFolder}/.vscode/browse.vc.db"

@@ -1,7 +1,12 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.13)
+
+project(pong)
+
+# Specify compilers explicitly
+set(CMAKE_C_COMPILER gcc) # Replace 'gcc' with your C compiler (e.g., clang)
+set(CMAKE_CXX_COMPILER g++) # Replace 'g++' with your C++ compiler (e.g., clang++)
 
 # SET(CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_SOURCE_DIR}/bin)
-project(pong)
 
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -34,4 +39,3 @@ target_link_libraries(${PROJECT_NAME}
 )
 
 install(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX})
-
