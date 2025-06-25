@@ -1,31 +1,28 @@
 {
-  // General settings for CMake Tools
-  "cmake.generator": "Ninja", // Use Ninja for faster builds; change to "Unix Makefiles" or "Visual Studio 16 2019" if needed
-  "cmake.buildDirectory": "${workspaceFolder}/build",
-  "cmake.configureOnOpen": true,
-
-  // IntelliSense settings for the Microsoft C/C++ extension
-  "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
-  "C_Cpp.intelliSenseEngine": "default",
-  "C_Cpp.default.includePath": [
-    "${workspaceFolder}/**"
-  ],
-  "C_Cpp.default.defines": [],
-
-  // Compiler-specific settings
-  "C_Cpp.default.compilerPath": "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.29.30133/bin/Hostx64/x64/cl.exe", // For Windows
-  "[cpp]": {
-    "editor.defaultFormatter": "ms-vscode.cpptools"
-  },
-
-  // Exclude build directories from search and IntelliSense
-  "files.exclude": {
-    "**/build": true
-  },
-  "search.exclude": {
-    "**/build": true
-  },
-  "files.watcherExclude": {
-    "**/build/**": true
+    "cmake.configureOnOpen": true,
+    "cmake.configureOnEdit": true,
+    "cmake.buildBeforeRun": true,
+    "cmake.debugConfig": {
+      "externalConsole": true
+    },
+    "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+    "cmake.buildDirectory": "${workspaceFolder}/build",
+    "cmake.sourceDirectory": "${workspaceFolder}/src",
+    "C_Cpp.default.compilerPath": "/usr/bin/g++",
+    "C_Cpp.default.compilerArgs": [
+      "-Wall",
+      "-Werror",
+      "-Wextra",
+      "-Wpedantic",
+      "-pedantic"
+    ],
+    "C_Cpp.default.intelliSenseMode": "gcc-x64",
+    "C_Cpp.default.includePath": [
+      "${workspaceFolder}/**",
+      "/usr/include/c++/10",
+      "/usr/include/x86_64-linux-gnu/c++/10",
+      "/usr/include/c++/10/backward",
+      "/usr/local/include",
+      "/usr/include"
+    ]
   }
-}
