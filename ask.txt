@@ -1,0 +1,478 @@
+src/main.cpp
+#include <SDL.h>          // Core SDL functionality
+#include <SDL_image.h>   // For image loading and handling
+#include <SDL_ttf.h>     // For text rendering with TrueType fonts
+
+#include <iostream>      // For input/output stream
+#include <vector>        // For using std::vector
+#include <string>        // For using std::string
+#include <memory>        // For smart pointers (std::unique_ptr)
+#include <random>        // For random number generation
+#include <chrono>        // For time-related functions
+#include <mutex>         // For mutexes in thread safety
+#include <future>        // For futures in asynchronous programming
+#include <sstream>       // For string stream operations
+#include <iomanip>       // For input/output manipulators
+
+// Function prototypes
+bool init();
+void close();
+
+// Window and renderer
+SDL_Window* gWindow = nullptr;
+SDL_Renderer* gRenderer = nullptr;
+
+// Main function
+int main(int argc, char* args[]) {
+    // Initialize SDL
+    if (!init()) {
+        std::cerr << "Failed to initialize SDL!" << std::endl;
+        return -1;
+    }
+
+    // Main game loop
+    bool quit = false;
+    SDL_Event e;
+
+    while (!quit) {
+        // Handle events
+        while (SDL_PollEvent(&e) != 0) {
+            if (e.type == SDL_QUIT) {
+                quit = true;
+            }
+        }
+
+        // Clear the screen
+        SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, 255); // Black color
+        SDL_RenderClear(gRenderer);
+
+        // Render game objects here (e.g., paddles, ball)
+
+        // Update the screen
+        SDL_RenderPresent(gRenderer);
+    }
+
+    // Clean up and close SDL
+    close();
+    return 0;
+}
+
+// Initialize SDL
+bool init() {
+    // Initialize SDL
+    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+        std::cerr << "SDL could not initialize! SDL_Error: " << SDL_GetError() << std::endl;
+        return false;
+    }
+
+    // Create window
+    gWindow = SDL_CreateWindow("Pong Game", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 600, SDL_WINDOW_SHOWN);
+    if (gWindow == nullptr) {
+        std::cerr << "Window could not be created! SDL_Error: " << SDL_GetError() << std::endl;
+        return false;
+    }
+
+    // Create renderer
+    gRenderer = SDL_CreateRenderer(gWindow, -1, SDL_RENDERER_ACCELERATED);
+    if (gRenderer == nullptr) {
+        std::cerr << "Renderer could not be created! SDL_Error: " << SDL_GetError() << std::endl;
+        return false;
+    }
+
+    return true;
+}
+
+// Clean up and close SDL
+void close() {
+    // Destroy renderer
+    if (gRenderer != nullptr) {
+        SDL_DestroyRenderer(gRenderer);
+        gRenderer = nullptr;
+    }
+
+    // Destroy window
+    if (gWindow != nullptr) {
+        SDL_DestroyWindow(gWindow);
+        gWindow = nullptr;
+    }
+
+    // Quit SDL subsystems
+    SDL_Quit();
+}
+
+src/Collision/Collision.cpp
+#include "Collision.h"
+
+bool Collision::checkRectCollision(const SDL_Rect& rectA, const SDL_Rect& rectB) {
+    return SDL_HasIntersection(&rectA, &rectB);
+}
+
+void Collision::handleBallPaddleCollision(SDL_Rect& ballRect, float& ballVelocityX, float& ballVelocityY, const SDL_Rect& paddleRect) {
+    if (checkRectCollision(ballRect, paddleRect)) {
+        // Reverse the ball's X velocity
+        ballVelocityX = -ballVelocityX;
+
+        // Adjust the ball's position to prevent it from sticking to the paddle
+        if (ballRect.y < paddleRect.y) {
+            ballRect.y = paddleRect.y - ballRect.h; // Ball is above the paddle
+        } else {
+            ballRect.y = paddleRect.y + paddleRect.h; // Ball is below the paddle
+        }
+    }
+}
+
+void Collision::handleBallWallCollision(SDL_Rect& ballRect, float& ballVelocityY, int screenHeight) {
+    if (ballRect.y <= 0 || ballRect.y + ballRect.h >= screenHeight) {
+        // Reverse the ball's Y velocity
+        ballVelocityY = -ballVelocityY;
+
+        // Adjust the ball's position to prevent it from sticking to the wall
+        if (ballRect.y <= 0) {
+            ballRect.y = 0; // Ball is at the top
+        } else {
+            ballRect.y = screenHeight - ballRect.h; // Ball is at the bottom
+        }
+    }
+}
+
+src/Collision/Collision.h
+#ifndef COLLISION_H
+#define COLLISION_H
+
+#include <SDL.h>
+
+class Collision {
+public:
+    static bool checkRectCollision(const SDL_Rect& rectA, const SDL_Rect& rectB);
+    static void handleBallPaddleCollision(SDL_Rect& ballRect, float& ballVelocityX, float& ballVelocityY, const SDL_Rect& paddleRect);
+    static void handleBallWallCollision(SDL_Rect& ballRect, float& ballVelocityY, int screenHeight);
+};
+
+#endif // COLLISION_H
+
+src/Entities/Ball.cpp
+#include "Ball.h"
+#include "TextureManager.h" // Assuming you have a TextureManager for loading textures
+
+Ball::Ball(int startX, int startY, int width, int height)
+    : velocityX(300.0f), velocityY(300.0f) // Set initial velocity
+{
+    rect.x = startX;
+    rect.y = startY;
+    rect.w = width;
+    rect.h = height;
+
+    // Load the ball texture (make sure to adjust the path as necessary)
+    texture = TextureManager::loadTexture("assets/images/ball.png");
+}
+
+Ball::~Ball() {
+    if (texture) {
+        SDL_DestroyTexture(texture);
+    }
+}
+
+void Ball::update(float deltaTime) {
+    // Update the ball's position based on its velocity
+    rect.x += static_cast<int>(velocityX * deltaTime);
+    rect.y += static_cast<int>(velocityY * deltaTime);
+}
+
+void Ball::render(SDL_Renderer* renderer) {
+    // Render the ball texture
+    SDL_RenderCopy(renderer, texture, nullptr, &rect);
+}
+
+void Ball::resetPosition(int x, int y) {
+    rect.x = x;
+    rect.y = y;
+}
+
+void Ball::setVelocity(float x, float y) {
+    velocityX = x;
+    velocityY = y;
+}
+
+SDL_Rect Ball::getRect() const {
+    return rect;
+}
+
+src/Entities/Ball.h
+#ifndef BALL_H
+#define BALL_H
+
+#include <SDL.h>
+#include <SDL_image.h>
+
+class Ball {
+public:
+    Ball(int startX, int startY, int width, int height);
+    ~Ball();
+
+    void update(float deltaTime);
+    void render(SDL_Renderer* renderer);
+    void resetPosition(int x, int y);
+    
+    void setVelocity(float x, float y);
+    SDL_Rect getRect() const;
+
+private:
+    SDL_Texture* texture;
+    SDL_Rect rect;
+    float velocityX;
+    float velocityY;
+};
+
+#endif // BALL_H
+
+src/Entities/Paddle.cpp
+#include "Paddle.h"
+
+Paddle::Paddle(int x, int y, int width, int height) 
+    : speed(5) // Set the speed of the paddle
+{
+    paddleRect.x = x;
+    paddleRect.y = y;
+    paddleRect.w = width;
+    paddleRect.h = height;
+}
+
+Paddle::~Paddle() {
+    // Cleanup if necessary
+}
+
+void Paddle::handleInput(const Uint8* keystates) {
+    // Move the paddle based on input
+    if (keystates[SDL_SCANCODE_UP] && paddleRect.y > 0) {
+        paddleRect.y -= speed; // Move up
+    }
+    if (keystates[SDL_SCANCODE_DOWN] && paddleRect.y < 600 - paddleRect.h) {
+        paddleRect.y += speed; // Move down
+    }
+}
+
+void Paddle::update() {
+    // Update paddle logic if needed (e.g., AI movement)
+}
+
+void Paddle::render(SDL_Renderer* renderer) {
+    // Set paddle color (e.g., white)
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+    SDL_RenderFillRect(renderer, &paddleRect); // Render the paddle
+}
+
+SDL_Rect Paddle::getRect() const {
+    return paddleRect; // Return the paddle's rectangle
+}
+
+src/Entities/Paddle.h
+#ifndef PADDLE_H
+#define PADDLE_H
+
+#include <SDL.h>
+#include <SDL_image.h>
+#include <SDL_ttf.h>
+
+#include <iostream>
+#include <vector>
+#include <string>
+#include <memory>
+
+class Paddle {
+public:
+    Paddle(int x, int y, int width, int height);
+    ~Paddle();
+
+    void handleInput(const Uint8* keystates);
+    void update();
+    void render(SDL_Renderer* renderer);
+
+    SDL_Rect getRect() const;
+
+private:
+    SDL_Rect paddleRect;
+    int speed;
+};
+
+#endif // PADDLE_H
+
+src/Game/Game.cpp
+#include "Game.h"
+
+Game::Game() : gWindow(nullptr), gRenderer(nullptr), isRunning(false) {}
+
+Game::~Game() {
+    clean();
+}
+
+bool Game::init() {
+    // Initialize SDL
+    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+        std::cerr << "SDL could not initialize! SDL_Error: " << SDL_GetError() << std::endl;
+        return false;
+    }
+
+    // Create window
+    gWindow = SDL_CreateWindow("Pong Game", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 600, SDL_WINDOW_SHOWN);
+    if (gWindow == nullptr) {
+        std::cerr << "Window could not be created! SDL_Error: " << SDL_GetError() << std::endl;
+        return false;
+    }
+
+    // Create renderer
+    gRenderer = SDL_CreateRenderer(gWindow, -1, SDL_RENDERER_ACCELERATED);
+    if (gRenderer == nullptr) {
+        std::cerr << "Renderer could not be created! SDL_Error: " << SDL_GetError() << std::endl;
+        return false;
+    }
+
+    isRunning = true;
+    return true;
+}
+
+void Game::run() {
+    while (isRunning) {
+        handleEvents();
+        update();
+        render();
+    }
+}
+
+void Game::handleEvents() {
+    SDL_Event e;
+    while (SDL_PollEvent(&e) != 0) {
+        if (e.type == SDL_QUIT) {
+            isRunning = false;
+        }
+    }
+}
+
+void Game::update() {
+    // Update game logic here (e.g., move paddles, update ball position)
+}
+
+void Game::render() {
+    // Clear the screen
+    SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, 255); // Black color
+    SDL_RenderClear(gRenderer);
+
+    // Render game objects here (e.g., paddles, ball)
+
+    // Update the screen
+    SDL_RenderPresent(gRenderer);
+}
+
+void Game::clean() {
+    // Destroy renderer
+    if (gRenderer != nullptr) {
+        SDL_DestroyRenderer(gRenderer);
+        gRenderer = nullptr;
+    }
+
+    // Destroy window
+    if (gWindow != nullptr) {
+        SDL_DestroyWindow(gWindow);
+        gWindow = nullptr;
+    }
+
+    // Quit SDL subsystems
+    SDL_Quit();
+}
+
+src/Game/Game.h
+#ifndef GAME_H
+#define GAME_H
+
+#include <SDL.h>
+#include <SDL_image.h>
+#include <SDL_ttf.h>
+
+#include <iostream>
+#include <vector>
+#include <string>
+#include <memory>
+
+class Game {
+public:
+    Game();
+    ~Game();
+
+    bool init();
+    void run();
+    void handleEvents();
+    void update();
+    void render();
+    void clean();
+
+private:
+    SDL_Window* gWindow;
+    SDL_Renderer* gRenderer;
+    bool isRunning;
+
+    // Game objects (e.g., paddles, ball) can be added here
+};
+
+#endif // GAME_H
+
+src/Input/InputHandler.cpp
+#include "InputHandler.h"
+
+InputHandler::InputHandler() {
+    currentKeyStates = SDL_GetKeyboardState(nullptr);
+    std::fill(std::begin(previousKeyStates), std::end(previousKeyStates), 0);
+}
+
+InputHandler::~InputHandler() {
+    // No dynamic memory to clean up
+}
+
+void InputHandler::update() {
+    // Store the current key states as previous key states
+    std::copy(currentKeyStates, currentKeyStates + SDL_NUM_SCANCODES, previousKeyStates);
+    currentKeyStates = SDL_GetKeyboardState(nullptr);
+}
+
+bool InputHandler::isKeyPressed(SDL_Scancode key) {
+    return currentKeyStates[key] == 1 && previousKeyStates[key] == 0;
+}
+
+bool InputHandler::isKeyReleased(SDL_Scancode key) {
+    return currentKeyStates[key] == 0 && previousKeyStates[key] == 1;
+}
+
+bool InputHandler::isKeyDown(SDL_Scancode key) {
+    return currentKeyStates[key] == 1;
+}
+
+void InputHandler::reset() {
+    // Reset the previous key states
+    std::fill(std::begin(previousKeyStates), std::end(previousKeyStates), 0);
+}
+
+src/Input/InputHandler.h
+#ifndef INPUTHANDLER_H
+#define INPUTHANDLER_H
+
+#include <SDL.h>
+
+class InputHandler {
+public:
+    InputHandler();
+    ~InputHandler();
+
+    void update();
+    bool isKeyPressed(SDL_Scancode key);
+    bool isKeyReleased(SDL_Scancode key);
+    bool isKeyDown(SDL_Scancode key);
+    
+    void reset();
+
+private:
+    const Uint8* currentKeyStates;
+    Uint8 previousKeyStates[SDL_NUM_SCANCODES];
+};
+
+#endif // INPUTHANDLER_H
+
+
+these files need wired together properly so that it builds/compiles properly

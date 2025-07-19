@@ -1,14 +1,6 @@
-#ifndef GAME_H
-#define GAME_H
-
-#include <SDL.h>
-#include <SDL_image.h>
-#include <SDL_ttf.h>
-
-#include <iostream>
-#include <vector>
-#include <string>
-#include <memory>
+#include "Ball.h"
+#include "Paddle.h"
+#include "InputHandler.h"
 
 class Game {
 public:
@@ -27,7 +19,7 @@ private:
     SDL_Renderer* gRenderer;
     bool isRunning;
 
-    // Game objects (e.g., paddles, ball) can be added here
+    Ball* ball; // Pointer to the ball
+    Paddle* playerPaddle; // Pointer to the player's paddle
+    InputHandler* inputHandler; // Input handler
 };
-
-#endif // GAME_H
