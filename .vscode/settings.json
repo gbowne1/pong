@@ -7,7 +7,7 @@
     },
     "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
     "cmake.buildDirectory": "${workspaceFolder}/build",
-    "cmake.sourceDirectory": "${workspaceFolder}/src",
+    "cmake.sourceDirectory": "D:/pong",
     "C_Cpp.default.compilerPath": "/usr/bin/g++",
     "C_Cpp.default.compilerArgs": [
       "-Wall",
