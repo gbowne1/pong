@@ -1,6 +1,6 @@
-#include "Ball.h"
-#include "Paddle.h"
-#include "InputHandler.h"
+#include "../Entities/Ball.h"
+#include "../Entities/Paddle.h"
+#include "../Input/InputHandler.h"
 
 class Game {
 public:

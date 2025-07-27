@@ -19,6 +19,19 @@ Ball::~Ball() {
     }
 }
 
+void Ball::loadBallTexture(const std::string& filename, SDL_Renderer* gRenderer) {
+    // Destroy old texture if already loaded
+    if (texture) {
+        SDL_DestroyTexture(texture);
+        texture = nullptr;
+    }
+
+    texture = TextureManager::loadTexture(filename, gRenderer);
+    if (!texture) {
+        SDL_Log("Failed to load ball texture from %s: %s", filename.c_str(), SDL_GetError());
+    }
+}
+
 void Ball::update(float deltaTime) {
     // Update the ball's position based on its velocity
     rect.x += static_cast<int>(velocityX * deltaTime);

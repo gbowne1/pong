@@ -1,4 +1,5 @@
 #include "Game.h"
+#include "../Collision/Collision.h"
 
 Game::Game() : gWindow(nullptr), gRenderer(nullptr), isRunning(false) {
     ball = new Ball(400, 300, 20, 20); // Example position and size
@@ -34,6 +35,9 @@ bool Game::init() {
         return false;
     }
 
+    ball->loadBallTexture("/assets/images/ball.png", gRenderer);
+
+     // Try loading the ball texture
     isRunning = true;
     return true;
 }
@@ -57,12 +61,12 @@ void Game::handleEvents() {
 
 void Game::update() {
     inputHandler->update();
-    playerPaddle->handleInput(inputHandler->currentKeyStates);
+    playerPaddle->handleInput(inputHandler->getCurrentKeyStates());
     ball->update(1.0f / 60.0f); // Assuming 60 FPS for simplicity
 
     // Handle collisions
-    Collision::handleBallPaddleCollision(ball->getRect(), ball->velocityX, ball->velocityY, playerPaddle->getRect());
-    Collision::handleBallWallCollision(ball->getRect(), ball->velocityY, 600); // Assuming 600 is the screen height
+    Collision::handleBallPaddleCollision(ball->getRect(), ball->getVelocityX(), ball->getVelocityY(), playerPaddle->getRect());
+    Collision::handleBallWallCollision(ball->getRect(), ball->getVelocityY(), 600);
 }
 
 void Game::render() {

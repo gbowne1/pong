@@ -13,7 +13,10 @@ public:
     void render(SDL_Renderer* renderer);
     void resetPosition(int x, int y);
     
-    void setVelocity(float x, float y);
+    float getVelocityX() const { return velocityX; }
+    float getVelocityY() const { return velocityY; }
+    void setVelocityX(float vx) { velocityX = vx; }
+    void setVelocityY(float vy) { velocityY = vy; }
     SDL_Rect getRect() const;
 
 private:

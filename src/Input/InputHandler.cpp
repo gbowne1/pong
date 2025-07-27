@@ -9,6 +9,10 @@ InputHandler::~InputHandler() {
     // No dynamic memory to clean up
 }
 
+const Uint8* InputHandler::getCurrentKeyStates() const {
+    return currentKeyStates;
+}
+
 void InputHandler::update() {
     // Store the current key states as previous key states
     std::copy(currentKeyStates, currentKeyStates + SDL_NUM_SCANCODES, previousKeyStates);

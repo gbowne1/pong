@@ -4,12 +4,12 @@
             "name": "Win32",
             "includePath": [
                 "${workspaceFolder}/**",
-                "C:/path/to/SDL2/include",
-                "C:/path/to/SDL2_image/include",
-                "C:/path/to/SDL2_ttf/include"
+                "C:/Program Files (x86)/SDL2/include",
+                "C:/Program Files (x86)/SDL2_image/include",
+                "C:/Program Files (x86)/SDL2_ttf/include"
             ],
             "defines": [],
-            "compilerPath": "C:/path/to/gcc/bin/g++.exe",
+            "compilerPath": "C:/msys64/ucrt64/bin/g++.exe",
             "cStandard": "c11",
             "cppStandard": "c++17",
             "intelliSenseMode": "gcc-x64"
