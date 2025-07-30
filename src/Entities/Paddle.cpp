@@ -1,6 +1,6 @@
 #include "Paddle.h"
 
-Paddle::Paddle(int x, int y, int width, int height) 
+Paddle::Paddle(int x, int y, int width, int height)
     : speed(5) // Set the speed of the paddle
 {
     paddleRect.x = x;

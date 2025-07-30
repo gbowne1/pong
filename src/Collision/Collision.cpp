@@ -4,7 +4,7 @@ bool Collision::checkRectCollision(const SDL_Rect& rectA, const SDL_Rect& rectB)
     return SDL_HasIntersection(&rectA, &rectB);
 }
 
-void Collision::handleBallPaddleCollision(SDL_Rect& ballRect, float& ballVelocityX, float& ballVelocityY, const SDL_Rect& paddleRect) {
+void Collision::handleBallPaddleCollision(SDL_Rect ballRect, float ballVelocityX, float ballVelocityY, const SDL_Rect paddleRect) {
     if (checkRectCollision(ballRect, paddleRect)) {
         // Reverse the ball's X velocity
         ballVelocityX = -ballVelocityX;
@@ -18,7 +18,7 @@ void Collision::handleBallPaddleCollision(SDL_Rect& ballRect, float& ballVelocit
     }
 }
 
-void Collision::handleBallWallCollision(SDL_Rect& ballRect, float& ballVelocityY, int screenHeight) {
+void Collision::handleBallWallCollision(SDL_Rect ballRect, float ballVelocityY, int screenHeight) {
     if (ballRect.y <= 0 || ballRect.y + ballRect.h >= screenHeight) {
         // Reverse the ball's Y velocity
         ballVelocityY = -ballVelocityY;

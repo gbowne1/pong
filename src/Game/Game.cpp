@@ -35,7 +35,7 @@ bool Game::init() {
         return false;
     }
 
-    ball->loadBallTexture("/assets/images/ball.png", gRenderer);
+    ball->loadBallTexture("./assets/images/ball.png", gRenderer);
 
      // Try loading the ball texture
     isRunning = true;

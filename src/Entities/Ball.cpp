@@ -8,9 +8,6 @@ Ball::Ball(int startX, int startY, int width, int height)
     rect.y = startY;
     rect.w = width;
     rect.h = height;
-
-    // Load the ball texture (make sure to adjust the path as necessary)
-    texture = TextureManager::loadTexture("assets/images/ball.png");
 }
 
 Ball::~Ball() {

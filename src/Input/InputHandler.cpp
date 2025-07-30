@@ -1,5 +1,7 @@
 #include "InputHandler.h"
 
+#include <iterator>
+
 InputHandler::InputHandler() {
     currentKeyStates = SDL_GetKeyboardState(nullptr);
     std::fill(std::begin(previousKeyStates), std::end(previousKeyStates), 0);
