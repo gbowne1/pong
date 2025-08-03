@@ -1,4 +1,5 @@
 #include "Collision.h"
+#include <cmath>
 
 bool Collision::checkRectCollision(const SDL_Rect& rectA, const SDL_Rect& rectB) {
     return SDL_HasIntersection(&rectA, &rectB);
@@ -6,14 +7,25 @@ bool Collision::checkRectCollision(const SDL_Rect& rectA, const SDL_Rect& rectB)
 
 void Collision::handleBallPaddleCollision(SDL_Rect ballRect, float ballVelocityX, float ballVelocityY, const SDL_Rect paddleRect) {
     if (checkRectCollision(ballRect, paddleRect)) {
-        // Reverse the ball's X velocity
+        // Reverse X velocity to bounce the ball back
         ballVelocityX = -ballVelocityX;
 
-        // Adjust the ball's position to prevent it from sticking to the paddle
+        // Calculate relative position of hit on the paddle
+        int paddleCenter = paddleRect.y + paddleRect.h / 2;
+        int ballCenter = ballRect.y + ballRect.h / 2;
+        int relativeIntersectY = paddleCenter - ballCenter;
+
+        // Normalize to get a vertical speed modifier
+        float normalized = static_cast<float>(relativeIntersectY) / (paddleRect.h / 2.0f);
+
+        // Change Y velocity based on collision point
+        ballVelocityY = -normalized * std::abs(ballVelocityY); // Keep the magnitude, just redirect
+
+        // Adjust ball's position to prevent sticking
         if (ballRect.y < paddleRect.y) {
-            ballRect.y = paddleRect.y - ballRect.h; // Ball is above the paddle
+            ballRect.y = paddleRect.y - ballRect.h;
         } else {
-            ballRect.y = paddleRect.y + paddleRect.h; // Ball is below the paddle
+            ballRect.y = paddleRect.y + paddleRect.h;
         }
     }
 }
