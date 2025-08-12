@@ -3,14 +3,16 @@
 
 Game::Game() : gWindow(nullptr), gRenderer(nullptr), isRunning(false) {
     ball = new Ball(400, 300, 20, 20); // Example position and size
-    playerPaddle = new Paddle(50, 250, 10, 100); // Example position and size
+    playerPaddle1 = new Paddle(50, 250, 10, 100); // Example position and size
+    playerPaddle2 = new Paddle(750, 250, 10, 100);
     inputHandler = new InputHandler();
 }
 
 Game::~Game() {
     clean();
     delete ball;
-    delete playerPaddle;
+    delete playerPaddle1;
+    delete playerPaddle2;
     delete inputHandler;
 }
 
@@ -35,9 +37,9 @@ bool Game::init() {
         return false;
     }
 
+    // Try loading the ball texture
     ball->loadBallTexture("./assets/images/ball.png", gRenderer);
 
-     // Try loading the ball texture
     isRunning = true;
     return true;
 }
@@ -47,6 +49,9 @@ void Game::run() {
         handleEvents();
         update();
         render();
+
+        // Tiny tiny delay
+        SDL_Delay(5);
     }
 }
 
@@ -61,12 +66,14 @@ void Game::handleEvents() {
 
 void Game::update() {
     inputHandler->update();
-    playerPaddle->handleInput(inputHandler->getCurrentKeyStates());
+    playerPaddle1->handleInput(inputHandler->getCurrentKeyStates(), SDL_SCANCODE_A, SDL_SCANCODE_Z);
+    playerPaddle2->handleInput(inputHandler->getCurrentKeyStates(), SDL_SCANCODE_UP, SDL_SCANCODE_DOWN);
     ball->update(1.0f / 60.0f); // Assuming 60 FPS for simplicity
 
     // Handle collisions
-    Collision::handleBallPaddleCollision(ball->getRect(), ball->getVelocityX(), ball->getVelocityY(), playerPaddle->getRect());
-    Collision::handleBallWallCollision(ball->getRect(), ball->getVelocityY(), 600);
+    Collision::handleBallPaddleCollision(*ball, playerPaddle1->getRect());
+    Collision::handleBallPaddleCollision(*ball, playerPaddle2->getRect());
+    Collision::handleBallWallCollision(*ball, 600);
 }
 
 void Game::render() {
@@ -74,7 +81,8 @@ void Game::render() {
     SDL_RenderClear(gRenderer);
 
     ball->render(gRenderer);
-    playerPaddle->render(gRenderer);
+    playerPaddle1->render(gRenderer);
+    playerPaddle2->render(gRenderer);
 
     SDL_RenderPresent(gRenderer);
 }

@@ -2,10 +2,10 @@
 #include "TextureManager.h" // Assuming you have a TextureManager for loading textures
 
 Ball::Ball(int startX, int startY, int width, int height)
-    : velocityX(300.0f), velocityY(300.0f) // Set initial velocity
+    : velocityX(100.0f), velocityY(100.0f) // Set initial velocity
 {
-    rect.x = startX;
-    rect.y = startY;
+    positionX = startX;
+    positionY = startY;
     rect.w = width;
     rect.h = height;
 }
@@ -31,8 +31,10 @@ void Ball::loadBallTexture(const std::string& filename, SDL_Renderer* gRenderer)
 
 void Ball::update(float deltaTime) {
     // Update the ball's position based on its velocity
-    rect.x += static_cast<int>(velocityX * deltaTime);
-    rect.y += static_cast<int>(velocityY * deltaTime);
+    positionX += velocityX * deltaTime;
+    positionY += velocityY * deltaTime;
+    rect.x = static_cast<int>(positionX);
+    rect.y = static_cast<int>(positionY);
 }
 
 void Ball::render(SDL_Renderer* renderer) {
@@ -41,6 +43,8 @@ void Ball::render(SDL_Renderer* renderer) {
 }
 
 void Ball::resetPosition(int x, int y) {
+    positionX = x;
+    positionX = y;
     rect.x = x;
     rect.y = y;
 }

@@ -15,7 +15,7 @@ public:
     Paddle(int x, int y, int width, int height);
     ~Paddle();
 
-    void handleInput(const Uint8* keystates);
+    void handleInput(const Uint8* keystates, SDL_Scancode up, SDL_Scancode down);
     void update();
     void render(SDL_Renderer* renderer);
 

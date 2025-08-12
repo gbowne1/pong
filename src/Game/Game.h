@@ -20,6 +20,7 @@ private:
     bool isRunning;
 
     Ball* ball; // Pointer to the ball
-    Paddle* playerPaddle; // Pointer to the player's paddle
+    Paddle* playerPaddle1; // Pointer to the player's 1 paddle
+    Paddle* playerPaddle2; // Pointer to the player's 2 paddle
     InputHandler* inputHandler; // Input handler
 };
