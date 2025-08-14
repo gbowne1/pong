@@ -1,5 +1,5 @@
 #include "Ball.h"
-#include "TextureManager.h" // Assuming you have a TextureManager for loading textures
+#include "TextureManager.h"
 
 Ball::Ball(int startX, int startY, int width, int height)
     : velocityX(100.0f), velocityY(100.0f) // Set initial velocity
@@ -44,7 +44,7 @@ void Ball::render(SDL_Renderer* renderer) {
 
 void Ball::resetPosition(int x, int y) {
     positionX = x;
-    positionX = y;
+    positionY= y;
     rect.x = x;
     rect.y = y;
 }
