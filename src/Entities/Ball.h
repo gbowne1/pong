@@ -29,6 +29,9 @@ private:
     SDL_Rect rect;
     float velocityX;
     float velocityY;
+
+    float positionX;
+    float positionY;
 };
 
 #endif // BALL_H
