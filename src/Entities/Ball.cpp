@@ -44,7 +44,7 @@ void Ball::render(SDL_Renderer* renderer) {
 
 void Ball::resetPosition(int x, int y) {
     positionX = x;
-    positionY= y;
+    positionY = y;
     rect.x = x;
     rect.y = y;
 }

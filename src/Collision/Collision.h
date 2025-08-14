@@ -2,7 +2,7 @@
 #define COLLISION_H
 
 #include <SDL.h>
-#include "Ball.h"
+#include "../Entities/Ball.h"
 
 class Collision {
 public:
